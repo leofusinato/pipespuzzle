@@ -2,35 +2,49 @@ package estrutura;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JLabel;
+import puzzle.Peca;
 
 /**
  * @author Leonardo Alex Fusinato
  */
 public class PipePuzzle implements Estado {
     
-    private String[] estadoInicial;
-    private String[] estadoFinal;
-    private JLabel[] icons;
+    private Peca pecas[][];
 
-    public PipePuzzle(String[] estadoInicial, String[] estadoFinal) {
-        this.estadoInicial = estadoInicial;
-        this.estadoFinal = estadoFinal;
+    public PipePuzzle(Peca[][] pecas) {
+        this.pecas = pecas;
+        
+       this.verificaPecasFixas();
     }
 
+    private void verificaPecasFixas() {
+        for (int i = 0; i < pecas.length; i++) {
+            for (int j = 0; j < pecas[i].length; j++) {
+                Peca peca = pecas[i][j];
+                if (this.isCanto(i, j)) {
+                    peca.setFixo(peca.isL());
+                    this.fixaPecaCanto(peca, i, j);
+                }
+                if (this.isLateral(i, j)) {
+                    peca.setFixo(peca.isR() || peca.isT());
+                    this.fixaPecaLateral(peca, i, j);
+                }
+            }
+        }
+    }
+
+    public Peca[][] getPecas() {
+        return pecas;
+    }
+    
     @Override
     public String getDescricao() {
-        return "";
+        return "PipePuzzle";
     }
 
     @Override
     public boolean ehMeta() {
-        for (int i = 0; i < estadoInicial.length; i++) {
-            if(estadoInicial[i].compareTo(estadoFinal[i]) != 0) {
-               return false; 
-            }
-        }
-        return true;
+        return false;
     }
 
     @Override
@@ -40,20 +54,111 @@ public class PipePuzzle implements Estado {
 
     @Override
     public List<Estado> sucessores() {
-        List<Estado> suc = new LinkedList<Estado>();
+        List<Estado> retorno = new LinkedList<Estado>();
         
-        for (int i = 0; i < estadoInicial.length; i++) {
-            if(estadoInicial[i].compareTo(estadoFinal[i]) != 0) {
-                if(Character.getNumericValue(estadoInicial[i].charAt(1)) == 4) {
-                   estadoInicial[i] = (estadoInicial[i].charAt(0) + "1").trim();
-                } else {
-                   estadoInicial[i] = (estadoInicial[i].charAt(0) + "" + (Character.getNumericValue(estadoInicial[i].charAt(1)) + 1) + "").trim();  
+        
+        
+        return retorno;
+    }
+
+    private boolean isCanto(int i, int j) {
+        return this.isCantoSuperiorEsquerdo(i, j) || this.isCantoSuperiorDireito(i, j) || this.isCantoInferiorEsquerdo(i, j) || this.isCantoInferiorDireito(i, j);
+    }
+
+    private boolean isCantoSuperiorEsquerdo(int i, int j) {
+        return i == 0 && j == 0;
+    }
+
+    private boolean isCantoSuperiorDireito(int i, int j) {
+        return i == 0 && j == pecas[i].length;
+    }
+
+    private boolean isCantoInferiorEsquerdo(int i, int j) {
+        return i == pecas.length && j == 0;
+    }
+
+    private boolean isCantoInferiorDireito(int i, int j) {
+        return i == pecas.length && j == pecas[i].length;
+    }
+
+    private boolean isLateral(int i, int j) {
+        return this.isLateralSuperior(i, j) || this.isLateralEsquerda(i, j) || this.isLateralDireita(i, j) || this.isLateralInferior(i, j);
+    }
+
+    private boolean isLateralSuperior(int i, int j) {
+        return i == 0 && j == 1;
+    }
+
+    private boolean isLateralEsquerda(int i, int j) {
+        return i == 1 && j == 0;
+    }
+
+    private boolean isLateralDireita(int i, int j) {
+        return i == 1 && j == pecas[i].length;
+    }
+
+    private boolean isLateralInferior(int i, int j) {
+        return i == pecas.length && j == 1;
+    }
+    
+    private void fixaPecaCanto(Peca peca, int i, int j) {
+        if (this.isCantoSuperiorEsquerdo(i, j)) {
+            while (!peca.isPosicaoViradaDireita()) {
+                peca.gira();
+            }
+        }
+        else if (this.isCantoSuperiorDireito(i, j)) {
+            while (!peca.isPosicaoViradaBaixo()) {
+                peca.gira();
+            }
+        }
+        else if (this.isCantoSuperiorDireito(i, j)) {
+            while (!peca.isPosicaoViradaEsquerda()) {
+                peca.gira();
+            }
+        }
+        else if (this.isCantoSuperiorEsquerdo(i, j)) {
+            while (!peca.isPosicaoViradaCima()) {
+                peca.gira();
+            }
+        }
+    }
+    
+    private void fixaPecaLateral(Peca peca, int i, int j) {
+        if (peca.isR()) {
+            if (this.isLateralSuperior(i, j) || this.isLateralInferior(i, j)) {
+                while (!(peca.isPosicaoViradaDireita() || peca.isPosicaoViradaEsquerda())) {
+                    peca.gira();
+                }
+            }
+            if (this.isLateralDireita(i, j) || this.isLateralEsquerda(i, j)) {
+                while (!(peca.isPosicaoViradaCima()|| peca.isPosicaoViradaBaixo())) {
+                    peca.gira();
                 }
             }
         }
-        
-        suc.add(new PipePuzzle(estadoInicial, estadoFinal));
-        return suc;
+        else if (peca.isT()) {
+            if (this.isLateralSuperior(i, j)) {
+                while (!peca.isPosicaoViradaBaixo()) {
+                    peca.gira();
+                }
+            }
+            else if (this.isLateralDireita(i, j)) {
+                while (!peca.isPosicaoViradaEsquerda()) {
+                    peca.gira();
+                }
+            }
+            else if (this.isLateralInferior(i, j)) {
+                while (!peca.isPosicaoViradaCima()) {
+                    peca.gira();
+                }
+            }
+            else if (this.isLateralEsquerda(i, j)) {
+                while (!peca.isPosicaoViradaCima()) {
+                    peca.gira();
+                }
+            }
+        }
     }
-    
+        
 }
