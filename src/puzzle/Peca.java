@@ -387,4 +387,10 @@ public class Peca implements Conectavel {
         }
         return retorno;
     }
+
+    @Override
+    public String toString() {
+        return "Peca (" + this.getNomeCompletoPeca() + "){" + "conectaCima=" + conectaCima + ", conectaDireita=" + conectaDireita + ", conectaBaixo=" + conectaBaixo + ", conectaEsquerda=" + conectaEsquerda + ", quantidadeConexoes=" + quantidadeConexoes + ", f=" + f + ", l=" + l + ", r=" + r + ", t=" + t + ", posicao=" + posicao + ", fixo=" + fixo + '}';
+    }
+    
 }

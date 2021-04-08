@@ -19,12 +19,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class Main extends javax.swing.JFrame {
 
-    private final Peca[][]   pecas;
+    private       Peca[][]   pecas;
     private final JLabel[][] icones;
 
     public Main() {
         initComponents();
-        this.pecas  = new Peca[3][3];
         this.icones = new JLabel[][]{{icon1, icon2, icon3}, {icon4, icon5, icon6}, {icon7, icon8, icon9}};
     }
 
@@ -175,15 +174,16 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_btSobreActionPerformed
 
     private void btCarregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCarregarActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter("Texto", "txt"));
-        
-        int escolha = chooser.showOpenDialog(null);
-        
-        String conteudo = "";
-        
-        if (escolha == JFileChooser.APPROVE_OPTION) {
-            File file = new File(chooser.getSelectedFile().getAbsolutePath());
+//        JFileChooser chooser = new JFileChooser();
+//        chooser.setFileFilter(new FileNameExtensionFilter("Texto", "txt"));
+//        
+//        int escolha = chooser.showOpenDialog(null);
+//        
+//        if (escolha == JFileChooser.APPROVE_OPTION) {
+            String conteudo = "";
+//        
+//            File file = new File(chooser.getSelectedFile().getAbsolutePath());
+            File file = new File("C:\\Users\\Ruan\\Downloads\\teste.txt");
             try {
                 Scanner leitor = new Scanner(file);
                 while (leitor.hasNextLine()) {
@@ -194,32 +194,37 @@ public class Main extends javax.swing.JFrame {
             } catch (FileNotFoundException e) {
                 System.out.println("Não foi possível ler o arquivo");
             }
-        }
-        String[] nomePecas = conteudo.split(",");
-        retiraEspacos(nomePecas);
-        
-        for (int i = 0; i < nomePecas.length; i++) {
-            Peca peca = FactoryPeca.instanciaPeca(nomePecas[i]);
-            this.pecas[i / 3][i % 3] = peca;
             
-            try {
-                icones[i / 3][i % 3].setIcon(peca.getInstanceImage());
-            } catch(Exception e) {
-                JOptionPane.showMessageDialog(null, "Não foi possível carregar o arquivo");
-                clearImgs();
-                break;
+            String[] nomePecas = conteudo.split(",");
+            retiraEspacos(nomePecas);
+
+            this.pecas = new Peca[3][3];
+            
+            for (int i = 0; i < nomePecas.length; i++) {
+                Peca peca = FactoryPeca.instanciaPeca(nomePecas[i]);
+                this.pecas[i / 3][i % 3] = peca;
+
+                try {
+                    icones[i / 3][i % 3].setIcon(peca.getInstanceImage());
+                } catch(Exception e) {
+                    JOptionPane.showMessageDialog(null, "Não foi possível carregar o arquivo");
+                    clearImgs();
+                    break;
+                }
             }
-        }
+//        }
     }//GEN-LAST:event_btCarregarActionPerformed
 
     private void btLarguraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLarguraActionPerformed
-        PipePuzzle inicial = new PipePuzzle(pecas);
-        System.out.println("busca em largura");
-        Nodo s = new BuscaLargura(new MostraStatusConsole()).busca(inicial);
-        if (s != null) {
-            System.out.println("solucao ("+s.getProfundidade()+")= "+s.montaCaminho());
+        if (pecas != null) {
+            PipePuzzle inicial = new PipePuzzle(pecas);
+            System.out.println("busca em largura");
+            Nodo s = new BuscaLargura(new MostraStatusConsole()).busca(inicial);
+            if (s != null) {
+                System.out.println("solucao (" + s.getProfundidade() + 1 + ")= " + s.montaCaminho());
+                (new Resultado(((PipePuzzle) s.getEstado()).getPecas())).setVisible(true);
+            }
         }
-        (new Resultado(inicial.getPecas())).setVisible(true);
     }//GEN-LAST:event_btLarguraActionPerformed
 
     private void btProfundidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btProfundidadeActionPerformed
