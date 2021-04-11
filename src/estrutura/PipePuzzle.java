@@ -147,10 +147,10 @@ public class PipePuzzle implements Estado {
         Peca pecaEsquerda = this.pecaEsquerda(1, 1);
         Peca pecaDireita  = this.pecaDireita(1, 1);
         
-        while (!(pecaMeio.isConectaCima()     == pecaSuperior.isConectaBaixo()
-              && pecaMeio.isConectaBaixo()    == pecaInferior.isConectaCima()
-              && pecaMeio.isConectaEsquerda() == pecaEsquerda.isConectaDireita()
-              && pecaMeio.isConectaDireita()  == pecaDireita.isConectaEsquerda())) {
+        while (!(!(pecaMeio.isConectaCima()     ^ pecaSuperior.isConectaBaixo())
+              && !(pecaMeio.isConectaBaixo()    ^ pecaInferior.isConectaCima())
+              && !(pecaMeio.isConectaEsquerda() ^ pecaEsquerda.isConectaDireita())
+              && !(pecaMeio.isConectaDireita()  ^ pecaDireita.isConectaEsquerda()))) {
             pecaMeio.gira();
         }
         
@@ -195,13 +195,13 @@ public class PipePuzzle implements Estado {
     private boolean fixaPecaConsequenteCantoSuperiorEsquerdo(Peca peca, int i, int j) {
         Peca pecaInferior = this.pecaInferior(i, j);
         Peca pecaDireita  = this.pecaDireita(i, j);
-        if ((pecaDireita.isFixo() && pecaDireita.isConectaEsquerda() || pecaInferior.isFixo() && !pecaInferior.isConectaCima()) && !peca.isPosicaoViradaDireita()) {
+        if ((pecaDireita.isFixo() && pecaDireita.isConectaEsquerda() || pecaInferior.isFixo() && !pecaInferior.isConectaCima())) {
             while (!peca.isPosicaoViradaDireita()) {
                 peca.gira();
             }
             return true;
         }
-        else if ((pecaInferior.isFixo() && pecaInferior.isConectaCima() || pecaDireita.isFixo() && !pecaDireita.isConectaEsquerda()) && !peca.isPosicaoViradaBaixo()) {
+        else if ((pecaInferior.isFixo() && pecaInferior.isConectaCima() || pecaDireita.isFixo() && !pecaDireita.isConectaEsquerda())) {
             while (!peca.isPosicaoViradaBaixo()) {
                 peca.gira();
             }
@@ -213,13 +213,13 @@ public class PipePuzzle implements Estado {
     private boolean fixaPecaConsequenteCantoSuperiorDireito(Peca peca, int i, int j) {
         Peca pecaEsquerda = this.pecaEsquerda(i, j);
         Peca pecaInferior = this.pecaInferior(i, j);
-        if ((pecaInferior.isFixo() && pecaInferior.isConectaCima() || pecaEsquerda.isFixo() && !pecaEsquerda.isConectaDireita()) && !peca.isPosicaoViradaBaixo()) {
+        if ((pecaInferior.isFixo() && pecaInferior.isConectaCima() || pecaEsquerda.isFixo() && !pecaEsquerda.isConectaDireita())) {
             while (!peca.isPosicaoViradaBaixo()) {
                 peca.gira();
             }
             return true;
         }
-        else if ((pecaEsquerda.isFixo() && pecaEsquerda.isConectaDireita() || pecaInferior.isFixo() && !pecaInferior.isConectaCima()) && !peca.isPosicaoViradaEsquerda()) {
+        else if ((pecaEsquerda.isFixo() && pecaEsquerda.isConectaDireita() || pecaInferior.isFixo() && !pecaInferior.isConectaCima())) {
             while (!peca.isPosicaoViradaEsquerda()) {
                 peca.gira();
             }
@@ -231,13 +231,13 @@ public class PipePuzzle implements Estado {
     private boolean fixaPecaConsequenteCantoInferiorEsquerdo(Peca peca, int i, int j) {
         Peca pecaSuperior = this.pecaSuperior(i, j);
         Peca pecaDireita  = this.pecaDireita(i, j);
-        if ((pecaDireita.isFixo() && pecaDireita.isConectaEsquerda() || pecaSuperior.isFixo() && !pecaSuperior.isConectaBaixo()) && !peca.isPosicaoViradaDireita()) {
+        if ((pecaDireita.isFixo() && pecaDireita.isConectaEsquerda() || pecaSuperior.isFixo() && !pecaSuperior.isConectaBaixo())) {
             while (!peca.isPosicaoViradaDireita()) {
                 peca.gira();
             }
             return true;
         }
-        else if ((pecaSuperior.isFixo() && pecaSuperior.isConectaBaixo() || pecaDireita.isFixo() && !pecaDireita.isConectaEsquerda()) && !peca.isPosicaoViradaCima()) {
+        else if ((pecaSuperior.isFixo() && pecaSuperior.isConectaBaixo() || pecaDireita.isFixo() && !pecaDireita.isConectaEsquerda())) {
             while (!peca.isPosicaoViradaCima()) {
                 peca.gira();
             }
@@ -249,13 +249,13 @@ public class PipePuzzle implements Estado {
     private boolean fixaPecaConsequenteCantoInferiorDireito(Peca peca, int i, int j) {
         Peca pecaEsquerda = this.pecaEsquerda(i, j);
         Peca pecaSuperior = this.pecaSuperior(i, j);
-        if ((pecaSuperior.isFixo() && pecaSuperior.isConectaBaixo() || pecaEsquerda.isFixo() && !pecaEsquerda.isConectaDireita()) && !peca.isPosicaoViradaCima()) {
+        if ((pecaSuperior.isFixo() && pecaSuperior.isConectaBaixo() || pecaEsquerda.isFixo() && !pecaEsquerda.isConectaDireita())) {
             while (!peca.isPosicaoViradaCima()) {
                 peca.gira();
             }
             return true;
         }
-        else if ((pecaEsquerda.isFixo() && pecaEsquerda.isConectaDireita() || pecaSuperior.isFixo() && !pecaSuperior.isConectaBaixo()) && !peca.isPosicaoViradaEsquerda()) {
+        else if ((pecaEsquerda.isFixo() && pecaEsquerda.isConectaDireita() || pecaSuperior.isFixo() && !pecaSuperior.isConectaBaixo())) {
             while (!peca.isPosicaoViradaEsquerda()) {
                 peca.gira();
             }
@@ -294,24 +294,22 @@ public class PipePuzzle implements Estado {
         Peca pecaEsquerda = this.pecaEsquerda(i, j);
         Peca pecaDireita  = this.pecaDireita(i, j);
         if (pecaEsquerda.isFixo() && pecaDireita.isFixo()) {
-            if (pecaEsquerda.isConectaDireita() && !peca.isPosicaoViradaEsquerda()) {
+            if (pecaEsquerda.isConectaDireita()) {
                 while (!peca.isPosicaoViradaEsquerda()) {
                     peca.gira();
                 }
                 return true;
             }
-            else if (pecaDireita.isConectaEsquerda() && !peca.isPosicaoViradaEsquerda()) {
+            else if (pecaDireita.isConectaEsquerda()) {
                 while (!peca.isPosicaoViradaEsquerda()) {
                     peca.gira();
                 }
                 return true;
             }
-            else if (!peca.isPosicaoViradaBaixo()) {
-                while (!peca.isPosicaoViradaBaixo()) {
-                    peca.gira();
-                }
-                return true;
+            while (!peca.isPosicaoViradaBaixo()) {
+                peca.gira();
             }
+            return true;
         }
         return true;
     }
@@ -320,24 +318,22 @@ public class PipePuzzle implements Estado {
         Peca pecaBaixo = this.pecaInferior(i, j);
         Peca pecaCima  = this.pecaSuperior(i, j);
         if (pecaBaixo.isFixo() && pecaCima.isFixo()) {
-            if (pecaBaixo.isConectaCima() && !peca.isPosicaoViradaBaixo()) {
+            if (pecaBaixo.isConectaCima()) {
                 while (!peca.isPosicaoViradaBaixo()) {
                     peca.gira();
                 }
                 return true;
             }
-            else if (pecaCima.isConectaBaixo() && !peca.isPosicaoViradaCima()) {
+            else if (pecaCima.isConectaBaixo()) {
                 while (!peca.isPosicaoViradaCima()) {
                     peca.gira();
                 }
                 return true;
             }
-            else if (!peca.isPosicaoViradaEsquerda()) {
-                while (!peca.isPosicaoViradaEsquerda()) {
-                    peca.gira();
-                }
-                return true;
+            while (!peca.isPosicaoViradaEsquerda()) {
+                peca.gira();
             }
+            return true;
         }
         return true;
     }
@@ -346,24 +342,22 @@ public class PipePuzzle implements Estado {
         Peca pecaEsquerda = this.pecaEsquerda(i, j);
         Peca pecaDireita  = this.pecaDireita(i, j);
         if (pecaEsquerda.isFixo() && pecaDireita.isFixo()) {
-            if (pecaEsquerda.isConectaDireita() && !peca.isPosicaoViradaEsquerda()) {
+            if (pecaEsquerda.isConectaDireita()) {
                 while (!peca.isPosicaoViradaEsquerda()) {
                     peca.gira();
                 }
                 return true;
             }
-            else if (pecaDireita.isConectaEsquerda() && !peca.isPosicaoViradaEsquerda()) {
+            else if (pecaDireita.isConectaEsquerda()) {
                 while (!peca.isPosicaoViradaEsquerda()) {
                     peca.gira();
                 }
                 return true;
             }
-            else if (!peca.isPosicaoViradaCima()) {
-                while (!peca.isPosicaoViradaCima()) {
-                    peca.gira();
-                }
-                return true;
+            while (!peca.isPosicaoViradaCima()) {
+                peca.gira();
             }
+            return true;
         }
         return true;
     }
@@ -372,24 +366,22 @@ public class PipePuzzle implements Estado {
         Peca pecaBaixo = this.pecaInferior(i, j);
         Peca pecaCima  = this.pecaSuperior(i, j);
         if (pecaBaixo.isFixo() && pecaCima.isFixo()) {
-            if (pecaBaixo.isConectaCima() && !peca.isPosicaoViradaBaixo()) {
+            if (pecaBaixo.isConectaCima()) {
                 while (!peca.isPosicaoViradaBaixo()) {
                     peca.gira();
                 }
                 return true;
             }
-            else if (pecaCima.isConectaBaixo() && !peca.isPosicaoViradaCima()) {
+            else if (pecaCima.isConectaBaixo()) {
                 while (!peca.isPosicaoViradaCima()) {
                     peca.gira();
                 }
                 return true;
             }
-            else if (!peca.isPosicaoViradaDireita()) {
-                while (!peca.isPosicaoViradaDireita()) {
-                    peca.gira();
-                }
-                return true;
+            while (!peca.isPosicaoViradaDireita()) {
+                peca.gira();
             }
+            return true;
         }
         return true;
     }
@@ -414,39 +406,31 @@ public class PipePuzzle implements Estado {
         Peca pecaEsquerda = this.pecaEsquerda(i, j);
         if (pecaEsquerda.isFixo()) {
             if (pecaEsquerda.isConectaDireita()) {
-                if (!peca.isPosicaoViradaBaixo()) {
-                    while (!peca.isPosicaoViradaBaixo()) {
-                        peca.gira();
-                    }
-                    return true;
+                while (!peca.isPosicaoViradaBaixo()) {
+                    peca.gira();
                 }
+                return true;
             }
             else {
-                if (!peca.isPosicaoViradaDireita()) {
-                    while (!peca.isPosicaoViradaDireita()) {
-                        peca.gira();
-                    }
-                    return true;
+                while (!peca.isPosicaoViradaDireita()) {
+                    peca.gira();
                 }
+                return true;
             }
         }
         else {
             Peca pecaDireita = this.pecaDireita(i, j);
             if (pecaDireita.isFixo()) {
                 if (pecaDireita.isConectaEsquerda()) {
-                    if (!peca.isPosicaoViradaDireita()) {
-                        while (!peca.isPosicaoViradaDireita()) {
-                            peca.gira();
-                        }
-                        return true;
-                    }
-                }
-                else if (!peca.isPosicaoViradaBaixo()) {
-                    while (!peca.isPosicaoViradaBaixo()) {
+                    while (!peca.isPosicaoViradaDireita()) {
                         peca.gira();
                     }
                     return true;
                 }
+                while (!peca.isPosicaoViradaBaixo()) {
+                    peca.gira();
+                }
+                return true;
             }
         }
         return true;
@@ -456,39 +440,31 @@ public class PipePuzzle implements Estado {
         Peca pecaBaixo = this.pecaInferior(i, j);
         if (pecaBaixo.isFixo()) {
             if (pecaBaixo.isConectaCima()) {
-                if (!peca.isPosicaoViradaBaixo()) {
                     while (!peca.isPosicaoViradaBaixo()) {
                         peca.gira();
                     }
                     return true;
-                }
             }
             else {
-                if (!peca.isPosicaoViradaEsquerda()) {
-                    while (!peca.isPosicaoViradaEsquerda()) {
-                        peca.gira();
-                    }
-                    return true;
+                while (!peca.isPosicaoViradaEsquerda()) {
+                    peca.gira();
                 }
+                return true;
             }
         }
         else {
             Peca pecaCima = this.pecaSuperior(i, j);
             if (pecaCima.isFixo()) {
                 if (pecaCima.isConectaBaixo()) {
-                    if (!peca.isPosicaoViradaEsquerda()) {
-                        while (!peca.isPosicaoViradaEsquerda()) {
-                            peca.gira();
-                        }
-                        return true;
-                    }
-                }
-                else if (!peca.isPosicaoViradaBaixo()) {
-                    while (!peca.isPosicaoViradaBaixo()) {
+                    while (!peca.isPosicaoViradaEsquerda()) {
                         peca.gira();
                     }
                     return true;
                 }
+                while (!peca.isPosicaoViradaBaixo()) {
+                    peca.gira();
+                }
+                return true;
             }
         }
         return true;
@@ -498,39 +474,31 @@ public class PipePuzzle implements Estado {
         Peca pecaDireita = this.pecaDireita(i, j);
         if (pecaDireita.isFixo()) {
             if (pecaDireita.isConectaEsquerda()) {
-                if (!peca.isPosicaoViradaCima()) {
-                    while (!peca.isPosicaoViradaCima()) {
-                        peca.gira();
-                    }
-                    return true;
+                while (!peca.isPosicaoViradaCima()) {
+                    peca.gira();
                 }
+                return true;
             }
             else {
-                if (!peca.isPosicaoViradaEsquerda()) {
-                    while (!peca.isPosicaoViradaEsquerda()) {
-                        peca.gira();
-                    }
-                    return true;
+                while (!peca.isPosicaoViradaEsquerda()) {
+                    peca.gira();
                 }
+                return true;
             }
         }
         else {
             Peca pecaEsquerda = this.pecaEsquerda(i, j);
             if (pecaEsquerda.isFixo()) {
                 if (pecaEsquerda.isConectaDireita()) {
-                    if (!peca.isPosicaoViradaEsquerda()) {
-                        while (!peca.isPosicaoViradaEsquerda()) {
-                            peca.gira();
-                        }
-                        return true;
-                    }
-                }
-                else if (!peca.isPosicaoViradaCima()) {
-                    while (!peca.isPosicaoViradaCima()) {
+                    while (!peca.isPosicaoViradaEsquerda()) {
                         peca.gira();
                     }
                     return true;
                 }
+                while (!peca.isPosicaoViradaCima()) {
+                    peca.gira();
+                }
+                return true;
             }
         }
         return true;
@@ -560,19 +528,15 @@ public class PipePuzzle implements Estado {
             Peca pecaBaixo = this.pecaInferior(i, j);
             if (pecaBaixo.isFixo()) {
                 if (pecaBaixo.isConectaCima()) {
-                    if (!peca.isPosicaoViradaDireita()) {
-                        while (!peca.isPosicaoViradaDireita()) {
-                            peca.gira();
-                        }
-                        return true;
-                    }
-                }
-                else if (!peca.isPosicaoViradaCima()) {
-                    while (!peca.isPosicaoViradaCima()) {
+                    while (!peca.isPosicaoViradaDireita()) {
                         peca.gira();
                     }
                     return true;
                 }
+                while (!peca.isPosicaoViradaCima()) {
+                    peca.gira();
+                }
+                return true;
             }
         }
         return true;
@@ -620,36 +584,28 @@ public class PipePuzzle implements Estado {
     
     private boolean fixaPecaCanto(Peca peca, int i, int j) {
         if (this.isCantoSuperiorEsquerdo(i, j)) {
-            if (!peca.isPosicaoViradaDireita()) {
-                while (!peca.isPosicaoViradaDireita()) {
-                    peca.gira();
-                }
-                return true;
+            while (!peca.isPosicaoViradaDireita()) {
+                peca.gira();
             }
+            return true;
         }
         else if (this.isCantoSuperiorDireito(i, j)) {
-            if (!peca.isPosicaoViradaBaixo()) {
-                while (!peca.isPosicaoViradaBaixo()) {
-                    peca.gira();
-                }
-                return true;
+            while (!peca.isPosicaoViradaBaixo()) {
+                peca.gira();
             }
+            return true;
         }
         else if (this.isCantoInferiorDireito(i, j)) {
-            if (!peca.isPosicaoViradaEsquerda()) {
-                while (!peca.isPosicaoViradaEsquerda()) {
-                    peca.gira();
-                }
-                return true;
+            while (!peca.isPosicaoViradaEsquerda()) {
+                peca.gira();
             }
+            return true;
         }
         else if (this.isCantoInferiorEsquerdo(i, j)) {
-            if (!peca.isPosicaoViradaCima()) {
-                while (!peca.isPosicaoViradaCima()) {
-                    peca.gira();
-                }
-                return true;
+            while (!peca.isPosicaoViradaCima()) {
+                peca.gira();
             }
+            return true;
         }
         return true;
     }
@@ -657,54 +613,42 @@ public class PipePuzzle implements Estado {
     private boolean fixaPecaLateral(Peca peca, int i, int j) {
         if (peca.isR()) {
             if (this.isLateralSuperior(i, j) || this.isLateralInferior(i, j)) {
-                if (!(peca.isPosicaoViradaDireita() || peca.isPosicaoViradaEsquerda())) {
-                    while (!(peca.isPosicaoViradaDireita() || peca.isPosicaoViradaEsquerda())) {
-                        peca.gira();
-                    }
-                    return true;
+                while (!(peca.isPosicaoViradaDireita() || peca.isPosicaoViradaEsquerda())) {
+                    peca.gira();
                 }
+                return true;
             }
             if (this.isLateralDireita(i, j) || this.isLateralEsquerda(i, j)) {
-                if (!(peca.isPosicaoViradaCima()|| peca.isPosicaoViradaBaixo())) {
-                    while (!(peca.isPosicaoViradaCima()|| peca.isPosicaoViradaBaixo())) {
-                        peca.gira();
-                    }
-                    return true;
+                while (!(peca.isPosicaoViradaCima()|| peca.isPosicaoViradaBaixo())) {
+                    peca.gira();
                 }
+                return true;
             }
         }
         else if (peca.isT()) {
             if (this.isLateralSuperior(i, j)) {
-                if (!peca.isPosicaoViradaBaixo()) {
-                    while (!peca.isPosicaoViradaBaixo()) {
-                        peca.gira();
-                    }
-                    return true;
+                while (!peca.isPosicaoViradaBaixo()) {
+                    peca.gira();
                 }
+                return true;
             }
             else if (this.isLateralDireita(i, j)) {
-                if (!peca.isPosicaoViradaEsquerda()) {
-                    while (!peca.isPosicaoViradaEsquerda()) {
-                        peca.gira();
-                    }
-                    return true;
+                while (!peca.isPosicaoViradaEsquerda()) {
+                    peca.gira();
                 }
+                return true;
             }
             else if (this.isLateralInferior(i, j)) {
-                if (!peca.isPosicaoViradaCima()) {
-                    while (!peca.isPosicaoViradaCima()) {
-                        peca.gira();
-                    }
-                    return true;
+                while (!peca.isPosicaoViradaCima()) {
+                    peca.gira();
                 }
+                return true;
             }
             else if (this.isLateralEsquerda(i, j)) {
-                if (!peca.isPosicaoViradaDireita()) {
-                    while (!peca.isPosicaoViradaDireita()) {
-                        peca.gira();
-                    }
-                    return true;
+                while (!peca.isPosicaoViradaDireita()) {
+                    peca.gira();
                 }
+                return true;
             }
         }
         return true;

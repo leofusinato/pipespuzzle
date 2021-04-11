@@ -41,7 +41,7 @@ public class BuscaLargura<E extends Estado> extends Busca<E> {
                 status.termina(true);
                 return n;
             }
-                        
+            
             abertos.addAll( sucessores(n) );
         }
         status.termina(false);
