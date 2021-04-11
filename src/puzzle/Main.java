@@ -1,5 +1,6 @@
 package puzzle;
 
+import estrutura.Busca;
 import estrutura.BuscaLargura;
 import estrutura.BuscaProfundidade;
 import estrutura.MostraStatusConsole;
@@ -8,6 +9,8 @@ import estrutura.PipePuzzle;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -216,29 +219,30 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_btCarregarActionPerformed
 
     private void btLarguraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLarguraActionPerformed
-        if (pecas != null) {
-            PipePuzzle inicial = new PipePuzzle(pecas);
-            System.out.println("busca em largura");
-            Nodo s = new BuscaLargura(new MostraStatusConsole()).busca(inicial);
-            if (s != null) {
-                System.out.println("Profundidade: " + s.getProfundidade());
-                (new Resultado(((PipePuzzle) s.getEstado()).getPecas())).setVisible(true);
-            }
-        }
+        BuscaLargura busca = new BuscaLargura(new MostraStatusConsole());
+        this.executaBusca(busca);
     }//GEN-LAST:event_btLarguraActionPerformed
 
     private void btProfundidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btProfundidadeActionPerformed
-        if (pecas != null) {
-            PipePuzzle inicial = new PipePuzzle(pecas);
-            System.out.println("busca em profundidade");
-            Nodo s = new BuscaProfundidade(1000, new MostraStatusConsole()).busca(inicial);
-            if (s != null) {
-                System.out.println("Profundidade: " + s.getProfundidade());
-                (new Resultado(((PipePuzzle) s.getEstado()).getPecas())).setVisible(true);
-            }
-        }
+        BuscaProfundidade busca = new BuscaProfundidade(9, new MostraStatusConsole());
+        this.executaBusca(busca);
     }//GEN-LAST:event_btProfundidadeActionPerformed
 
+    private void executaBusca(Busca<PipePuzzle> busca) {
+        if (pecas != null) {
+            PipePuzzle inicial = new PipePuzzle(pecas);
+            Nodo s = null;
+            
+            try {
+                s = busca.busca(inicial);
+            } catch (Exception ex) {}
+            
+            if (s != null) {
+                (new Resultado(((PipePuzzle) s.getEstado()).getPecas(), "Profundidade: " + s.getProfundidade() + "\nTempo: " + busca.getStatus().getTempoDecorrido() + "ms")).setVisible(true);
+            }
+        }
+    }
+    
     /**
      * Remove os icones dos labels
      */
