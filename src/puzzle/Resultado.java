@@ -29,7 +29,7 @@ public class Resultado extends javax.swing.JFrame {
                 try {
                     icones[i][j].setIcon(pecas[i][j].getInstanceImage());
                 } catch(Exception e) {
-                    JOptionPane.showMessageDialog(null, "Não foi possível montar o resultado final");
+                    JOptionPane.showMessageDialog(null, "Nao foi possivel montar o resultado final");
                     clearImgs();
                 }
             }

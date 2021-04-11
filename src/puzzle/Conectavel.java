@@ -7,60 +7,60 @@ package puzzle;
 public interface Conectavel {
     
     /**
-     * Define se é possível se conectar diretamente com a peça por cima
+     * Define se e possivel se conectar diretamente com a peca por cima
      * 
-     * @param conectavel a peça que será a outra ponta da conexão
+     * @param conectavel a peca que sera a outra ponta da conexao
      * @return boolean
      */
     public boolean conectaCima(Conectavel conectavel);
     
     /**
-     * Define se é possível se conectar diretamente com a peça pela direita
+     * Define se e possivel se conectar diretamente com a peca pela direita
      * 
-     * @param conectavel a peça que será a outra ponta da conexão
+     * @param conectavel a peca que sera a outra ponta da conexao
      * @return boolean
      */
     public boolean conectaDireita(Conectavel conectavel);
      
     /**
-     * Define se é possível se conectar diretamente com a peça por baixo
+     * Define se e possivel se conectar diretamente com a peca por baixo
      * 
-     * @param conectavel a peça que será a outra ponta da conexão
+     * @param conectavel a peca que sera a outra ponta da conexao
      * @return boolean
      */
     public boolean conectaBaixo(Conectavel conectavel);
     
     /**
-     * Define se é possível se conectar diretamente com a peça pela esquerda
+     * Define se e possivel se conectar diretamente com a peca pela esquerda
      * 
-     * @param conectavel a peça que será a outra ponta da conexão
+     * @param conectavel a peca que sera a outra ponta da conexao
      * @return boolean
      */
     public boolean conectaEsquerda(Conectavel conectavel);
     
     /**
-     * Define se a peça pode se conectar por cima
+     * Define se a peca pode se conectar por cima
      * 
      * @return boolean
      */
     public boolean isConectaCima();
     
     /**
-     * Define se a peça pode se conectar pela direita
+     * Define se a peca pode se conectar pela direita
      * 
      * @return boolean
      */
     public boolean isConectaDireita();
     
     /**
-     * Define se a peça pode se conectar por baixo
+     * Define se a peca pode se conectar por baixo
      * 
      * @return boolean
      */
     public boolean isConectaBaixo();
 
     /**
-     * Define se a peça pode se conectar pela esquerda
+     * Define se a peca pode se conectar pela esquerda
      * 
      * @return boolean
      */    

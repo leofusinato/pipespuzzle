@@ -121,15 +121,15 @@ public class Peca implements Conectavel, Cloneable {
     }
     
     /**
-     * Gira a peça no sentido horário.
+     * Gira a peca no sentido horario.
      */
     public void gira() {
         this.gira(true);
     }
     
     /**
-     * Gira a peça.
-     * @param sentidoHorario Sentido que sera rotacionado. <code>true</code> para sentido horário, <code>false</code> para sentido anti-horário.
+     * Gira a peca.
+     * @param sentidoHorario Sentido que sera rotacionado. <code>true</code> para sentido horario, <code>false</code> para sentido anti-horario.
      */
     public void gira(boolean sentidoHorario) {
         if (sentidoHorario) {
@@ -217,7 +217,7 @@ public class Peca implements Conectavel, Cloneable {
     }
     
     /**
-     * Calcula quantas conexões a peça faz
+     * Calcula quantas conexoes a peca faz
      * 
      * @return int
      */
@@ -239,7 +239,7 @@ public class Peca implements Conectavel, Cloneable {
     }
     
     /**
-     * Calcula se a peça é uma peça "final". Peças finais tem somente uma conexão.
+     * Calcula se a peca eh uma peca "final". Pecas finais tem somente uma conexao.
      * 
      * @return boolean
      */
@@ -248,7 +248,7 @@ public class Peca implements Conectavel, Cloneable {
     }
     
     /**
-     * Calcula se a peça é uma peça em formato de "L". Peças em "L" tem duas conexões e elas são adjacentes:
+     * Calcula se a peca eh uma peca em formato de "L". Pecas em "L" tem duas conexoes e elas sao adjacentes:
      * Cima & Direita;
      * Direita & Baixo;
      * Baixo & Esquerda; e
@@ -265,7 +265,7 @@ public class Peca implements Conectavel, Cloneable {
     }
     
     /**
-     * Calcula se a peça é "reta". Peças "retas" tem duas conexões e elas são opostas:
+     * Calcula se a peca eh "reta". Pecas "retas" tem duas conexoes e elas sao opostas:
      * Cima & Baixo; e
      * Esquerda & Direita.
      * 
@@ -278,7 +278,7 @@ public class Peca implements Conectavel, Cloneable {
     }
     
     /**
-     * Calcula se a peça é uma peça em "T". Peças em "T" tem três conexões.
+     * Calcula se a peca eh uma peca em "T". Pecas em "T" tem tres conexoes.
      * 
      * @return boolean
      */
@@ -287,7 +287,7 @@ public class Peca implements Conectavel, Cloneable {
     }
     
     /**
-     * Calcula para qual lado está virada a peça
+     * Calcula para qual lado esta virada a peca
      * 
      * @return int
      */
@@ -309,7 +309,7 @@ public class Peca implements Conectavel, Cloneable {
     }
     
     /**
-     * Calcula para qual lado está virada a peça se a peça for "final"
+     * Calcula para qual lado esta virada a peca se a peca for "final"
      * 
      * @return int
      */
@@ -331,7 +331,7 @@ public class Peca implements Conectavel, Cloneable {
     }
     
     /**
-     * Calcula para qual lado está virada a peça se a peça for uma peça em "L"
+     * Calcula para qual lado esta virada a peca se a peca for uma peca em "L"
      * 
      * @return int
      */
@@ -353,7 +353,7 @@ public class Peca implements Conectavel, Cloneable {
     }
     
     /**
-     * Calcula para qual lado está virada a peça se for uma peça "reta"
+     * Calcula para qual lado esta virada a peca se for uma peca "reta"
      * 
      * @return int
      */
@@ -369,7 +369,7 @@ public class Peca implements Conectavel, Cloneable {
     }
     
     /**
-     * Calcula para qual lado está virada a peça se a peça for uma peça em "T"
+     * Calcula para qual lado esta virada a peca se a peca for uma peca em "T"
      * 
      * @return int
      */
@@ -391,7 +391,7 @@ public class Peca implements Conectavel, Cloneable {
     }
 
     /**
-     * Cria um clone da peça, criando uma nova referência de memória
+     * Cria um clone da peca, criando uma nova referencia de memoria
      * @return 
      */
     public Peca clona() {

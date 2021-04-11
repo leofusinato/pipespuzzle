@@ -192,7 +192,7 @@ public class Main extends javax.swing.JFrame {
                 }
                 leitor.close();
             } catch (FileNotFoundException e) {
-                System.out.println("Não foi possível ler o arquivo");
+                System.out.println("Nao foi possivel ler o arquivo");
             }
             
             String[] nomePecas = conteudo.split(",");
@@ -207,7 +207,7 @@ public class Main extends javax.swing.JFrame {
                 try {
                     icones[i / 3][i % 3].setIcon(peca.getInstanceImage());
                 } catch(Exception e) {
-                    JOptionPane.showMessageDialog(null, "Não foi possível carregar o arquivo");
+                    JOptionPane.showMessageDialog(null, "Nao foi possivel carregar o arquivo");
                     clearImgs();
                     break;
                 }
