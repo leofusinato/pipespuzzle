@@ -1,12 +1,14 @@
 package puzzle;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 /**
  * Peca
  * @author Ruan
  */
-public class Peca implements Conectavel {
+public class Peca implements Conectavel, Cloneable {
 
     static public final int POSICAO_VIRADA_CIMA     = 0;
     static public final int POSICAO_VIRADA_DIREITA  = 1;
@@ -388,6 +390,20 @@ public class Peca implements Conectavel {
         return retorno;
     }
 
+    /**
+     * Cria um clone da peça, criando uma nova referência de memória
+     * @return 
+     */
+    public Peca clona() {
+        Peca clone = null;
+        try {
+            clone = (Peca) this.clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(Peca.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return clone;
+    }
+    
     @Override
     public String toString() {
         return "Peca (" + this.getNomeCompletoPeca() + "){" + "conectaCima=" + conectaCima + ", conectaDireita=" + conectaDireita + ", conectaBaixo=" + conectaBaixo + ", conectaEsquerda=" + conectaEsquerda + ", quantidadeConexoes=" + quantidadeConexoes + ", f=" + f + ", l=" + l + ", r=" + r + ", t=" + t + ", posicao=" + posicao + ", fixo=" + fixo + '}';

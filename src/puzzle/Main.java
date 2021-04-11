@@ -1,6 +1,7 @@
 package puzzle;
 
 import estrutura.BuscaLargura;
+import estrutura.BuscaProfundidade;
 import estrutura.MostraStatusConsole;
 import estrutura.Nodo;
 import estrutura.PipePuzzle;
@@ -174,16 +175,15 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_btSobreActionPerformed
 
     private void btCarregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCarregarActionPerformed
-//        JFileChooser chooser = new JFileChooser();
-//        chooser.setFileFilter(new FileNameExtensionFilter("Texto", "txt"));
-//        
-//        int escolha = chooser.showOpenDialog(null);
-//        
-//        if (escolha == JFileChooser.APPROVE_OPTION) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Texto", "txt"));
+        
+        int escolha = chooser.showOpenDialog(null);
+        
+        if (escolha == JFileChooser.APPROVE_OPTION) {
             String conteudo = "";
-//        
-//            File file = new File(chooser.getSelectedFile().getAbsolutePath());
-            File file = new File("C:\\Users\\Ruan\\Downloads\\teste.txt");
+        
+            File file = new File(chooser.getSelectedFile().getAbsolutePath());
             try {
                 Scanner leitor = new Scanner(file);
                 while (leitor.hasNextLine()) {
@@ -212,7 +212,7 @@ public class Main extends javax.swing.JFrame {
                     break;
                 }
             }
-//        }
+        }
     }//GEN-LAST:event_btCarregarActionPerformed
 
     private void btLarguraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLarguraActionPerformed
@@ -221,20 +221,22 @@ public class Main extends javax.swing.JFrame {
             System.out.println("busca em largura");
             Nodo s = new BuscaLargura(new MostraStatusConsole()).busca(inicial);
             if (s != null) {
-                System.out.println("solucao (" + s.getProfundidade() + 1 + ")= " + s.montaCaminho());
+                System.out.println("Profundidade: " + s.getProfundidade());
                 (new Resultado(((PipePuzzle) s.getEstado()).getPecas())).setVisible(true);
             }
         }
     }//GEN-LAST:event_btLarguraActionPerformed
 
     private void btProfundidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btProfundidadeActionPerformed
-//        PipePuzzle inicial = new PipePuzzle(estadoInicial);
-//        System.out.println("busca em profundidade");
-//        Nodo t = new BuscaProfundidade(40, new MostraStatusConsole()).busca(inicial);
-//        if (t != null) {
-//            System.out.println("solucao ("+t.getProfundidade()+")= "+t.montaCaminho());
-//        }
-//        new Resultado(estadoInicial).setVisible(true);
+        if (pecas != null) {
+            PipePuzzle inicial = new PipePuzzle(pecas);
+            System.out.println("busca em profundidade");
+            Nodo s = new BuscaProfundidade(1000, new MostraStatusConsole()).busca(inicial);
+            if (s != null) {
+                System.out.println("Profundidade: " + s.getProfundidade());
+                (new Resultado(((PipePuzzle) s.getEstado()).getPecas())).setVisible(true);
+            }
+        }
     }//GEN-LAST:event_btProfundidadeActionPerformed
 
     /**

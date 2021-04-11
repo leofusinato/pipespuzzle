@@ -9,34 +9,61 @@ import puzzle.Peca;
  */
 public class PipePuzzle implements Estado {
     
-    private Peca pecas[][];
+    private Peca    pecas[][];
     private boolean allPecasFixasFixadas;
     private boolean allPecasFixasFixadasConsequentes;
+    private boolean pecaMeioFixada;
     
     public PipePuzzle(Peca[][] pecas) {
-        this.pecas = pecas;
-        this.setAllPecasFixasFixadas(false);
-        this.setAllPecasFixasFixadasConsequentes(false);
+        this.pecas = new Peca[][]{
+            {pecas[0][0].clona(), pecas[0][1].clona(), pecas[0][2].clona()},
+            {pecas[1][0].clona(), pecas[1][1].clona(), pecas[1][2].clona()},
+            {pecas[2][0].clona(), pecas[2][1].clona(), pecas[2][2].clona()}
+        };
+        
+        this.allPecasFixasFixadas             = false;
+        this.allPecasFixasFixadasConsequentes = false;
+        this.pecaMeioFixada                   = false;
+    }
+    
+    public PipePuzzle(Peca[][] pecas, boolean allPecasFixasFixadas, boolean allPecasFixasFixadasConsequentes, boolean pecaMeioFixada) {
+        this.pecas = new Peca[][]{
+            {pecas[0][0].clona(), pecas[0][1].clona(), pecas[0][2].clona()},
+            {pecas[1][0].clona(), pecas[1][1].clona(), pecas[1][2].clona()},
+            {pecas[2][0].clona(), pecas[2][1].clona(), pecas[2][2].clona()}
+        };
+        
+        this.allPecasFixasFixadas             = allPecasFixasFixadas;
+        this.allPecasFixasFixadasConsequentes = allPecasFixasFixadasConsequentes;
+        this.pecaMeioFixada                   = pecaMeioFixada;
     }
 
     public Peca[][] getPecas() {
         return pecas;
     }
 
-    private boolean isAllPecasFixasFixadas() {
+    public boolean isAllPecasFixasFixadas() {
         return allPecasFixasFixadas;
     }
 
-    private void setAllPecasFixasFixadas(boolean allPecasFixasFixadas) {
+    public void setAllPecasFixasFixadas(boolean allPecasFixasFixadas) {
         this.allPecasFixasFixadas = allPecasFixasFixadas;
     }
 
-    private boolean isAllPecasFixasFixadasConsequentes() {
+    public boolean isAllPecasFixasFixadasConsequentes() {
         return allPecasFixasFixadasConsequentes;
     }
 
-    private void setAllPecasFixasFixadasConsequentes(boolean allPecasFixasFixadasConsequentes) {
+    public void setAllPecasFixasFixadasConsequentes(boolean allPecasFixasFixadasConsequentes) {
         this.allPecasFixasFixadasConsequentes = allPecasFixasFixadasConsequentes;
+    }
+
+    public boolean isPecaMeioFixada() {
+        return pecaMeioFixada;
+    }
+
+    public void setPecaMeioFixada(boolean pecaMeioFixada) {
+        this.pecaMeioFixada = pecaMeioFixada;
     }
     
     @Override
@@ -46,9 +73,7 @@ public class PipePuzzle implements Estado {
 
     @Override
     public boolean ehMeta() {
-        boolean retorno = this.isAllPecasFixasFixadas() && this.isAllPecasFixasFixadasConsequentes();
-        
-        return retorno;
+        return this.isAllPecasFixasFixadas() && this.isAllPecasFixasFixadasConsequentes() && this.isPecaMeioFixada();
     }
 
     @Override
@@ -60,21 +85,18 @@ public class PipePuzzle implements Estado {
     public List<Estado> sucessores() {
         List<Estado> retorno = new LinkedList<Estado>();
         
-        if (this.isAllPecasFixasFixadas()) {
-            if (this.isAllPecasFixasFixadasConsequentes()) {
-                
-            }
-            else {
-                this.setAllPecasFixasFixadasConsequentes(this.verificaPecasFixasConsequentes());
-            }
-        }
-        else {
+        if (!this.isAllPecasFixasFixadas()) {
             this.setAllPecasFixasFixadas(this.verificaPecasFixas());
         }
+        if (this.isAllPecasFixasFixadas() && !this.isAllPecasFixasFixadasConsequentes()) {
+            this.setAllPecasFixasFixadasConsequentes(this.verificaPecasFixasConsequentes());
+        }
+        if (this.isAllPecasFixasFixadas() && this.isAllPecasFixasFixadasConsequentes()) {
+            this.setPecaMeioFixada(this.fixaPecaMeio());
+        }
         
-        PipePuzzle novoEstado = new PipePuzzle(this.getPecas());
-        novoEstado.setAllPecasFixasFixadas(this.isAllPecasFixasFixadas());
-        novoEstado.setAllPecasFixasFixadasConsequentes(this.isAllPecasFixasFixadasConsequentes());
+        PipePuzzle novoEstado = new PipePuzzle(this.getPecas(), this.isAllPecasFixasFixadas(), this.isAllPecasFixasFixadasConsequentes(), this.isPecaMeioFixada());
+        
         retorno.add(novoEstado);
         
         return retorno;
@@ -104,12 +126,12 @@ public class PipePuzzle implements Estado {
             for (int j = 0; j < pecas[i].length; j++) {
                 Peca peca = pecas[i][j];
                 if (!peca.isFixo()) {
-                    if (this.isCanto(i, j) && peca.isF()) {
-                        peca.setFixo(this.verificaPecaFixaConsequenteCanto(peca, i, j));
+                    if (this.isCanto(i, j) && peca.isF() && this.verificaPecaFixavelConsequenteCanto(peca, i, j)) {
+                        peca.setFixo(this.fixaPecaConsequenteCanto(peca, i, j));
                         return false;
                     }
-                    if (this.isLateral(i, j) && (peca.isF() || peca.isL())) {
-                        peca.setFixo(this.verificaPecaFixaConsequenteLateral(peca, i, j));
+                    if (this.isLateral(i, j) && (peca.isF() || peca.isL()) && this.verificaPecaFixavelConsequenteLateral(peca, i, j)) {
+                        peca.setFixo(this.fixaPecaConsequenteLateral(peca, i, j));
                         return false;
                     }
                 }
@@ -118,239 +140,444 @@ public class PipePuzzle implements Estado {
         return true;
     }
 
-    private boolean verificaPecaFixaConsequenteCanto(Peca peca, int i, int j) {
-        if (this.isCantoSuperiorEsquerdo(i, j)) {
-            return this.verificaPecaFixaConsequenteCantoSuperiorEsquerdo(peca, i, j);
+    private boolean fixaPecaMeio() {
+        Peca pecaMeio     = pecas[1][1];
+        Peca pecaSuperior = this.pecaSuperior(1, 1);
+        Peca pecaInferior = this.pecaInferior(1, 1);
+        Peca pecaEsquerda = this.pecaEsquerda(1, 1);
+        Peca pecaDireita  = this.pecaDireita(1, 1);
+        
+        while (!(pecaMeio.isConectaCima()     == pecaSuperior.isConectaBaixo()
+           && pecaMeio.isConectaBaixo()    == pecaInferior.isConectaCima()
+           && pecaMeio.isConectaEsquerda() == pecaEsquerda.isConectaDireita()
+           && pecaMeio.isConectaDireita()  == pecaDireita.isConectaEsquerda())) {
+            pecaMeio.gira();
         }
-        else if (this.isCantoSuperiorDireito(i, j)) {
-            return this.verificaPecaFixaConsequenteCantoSuperiorDireito(peca, i, j);
-        }
-        else if (this.isCantoInferiorEsquerdo(i, j)) {
-            return this.verificaPecaFixaConsequenteCantoInferiorEsquerdo(peca, i, j);
-        }
-        else if (this.isCantoInferiorDireito(i, j)) {
-            return this.verificaPecaFixaConsequenteCantoInferiorDireito(peca, i, j);
-        }
-        return true;
-    }
-
-    private boolean verificaPecaFixaConsequenteCantoSuperiorEsquerdo(Peca peca, int i, int j) {
-        if (this.pecaDireita(i, j).isFixo() && !peca.isPosicaoViradaDireita()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaDireita()) {
-                return false;
-            }
-        }
-        else if (this.pecaInferior(i, j).isFixo() && !peca.isPosicaoViradaBaixo()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaBaixo()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean verificaPecaFixaConsequenteCantoSuperiorDireito(Peca peca, int i, int j) {
-        if (this.pecaInferior(i, j).isFixo() && !peca.isPosicaoViradaBaixo()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaBaixo()) {
-                return false;
-            }
-        }
-        else if (this.pecaEsquerda(i, j).isFixo() && !peca.isPosicaoViradaEsquerda()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaEsquerda()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean verificaPecaFixaConsequenteCantoInferiorEsquerdo(Peca peca, int i, int j) {
-        if (this.pecaDireita(i, j).isFixo() && !peca.isPosicaoViradaDireita()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaDireita()) {
-                return false;
-            }
-        }
-        else if (this.pecaSuperior(i, j).isFixo() && !peca.isPosicaoViradaCima()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaCima()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean verificaPecaFixaConsequenteCantoInferiorDireito(Peca peca, int i, int j) {
-        if (this.pecaSuperior(i, j).isFixo() && !peca.isPosicaoViradaCima()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaCima()) {
-                return false;
-            }
-        }
-        else if (this.pecaEsquerda(i, j).isFixo() && !peca.isPosicaoViradaEsquerda()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaEsquerda()) {
-                return false;
-            }
-        }
+        
         return true;
     }
     
-    private boolean verificaPecaFixaConsequenteLateral(Peca peca, int i, int j) {
+    private boolean verificaPecaFixavelConsequenteCanto(Peca peca, int i, int j) {
+        return (this.isCantoSuperiorEsquerdo(i, j) && (this.pecaDireita(i, j).isFixo()  || this.pecaInferior(i, j).isFixo()))
+            || (this.isCantoSuperiorDireito(i, j)  && (this.pecaEsquerda(i, j).isFixo() || this.pecaInferior(i, j).isFixo()))
+            || (this.isCantoInferiorEsquerdo(i, j) && (this.pecaDireita(i, j).isFixo()  || this.pecaSuperior(i, j).isFixo()))
+            || (this.isCantoInferiorDireito(i, j)  && (this.pecaEsquerda(i, j).isFixo() || this.pecaSuperior(i, j).isFixo()));
+    }
+    
+    private boolean verificaPecaFixavelConsequenteLateral(Peca peca, int i, int j) {
         if (peca.isF()) {
-            return this.verificaPecaFixaConsequenteLateralF(peca, i, j);
+            return ((this.isLateralSuperior(i, j) || this.isLateralInferior(i, j)) && this.pecaDireita(i, j).isFixo()  && this.pecaEsquerda(i, j).isFixo())
+                || ((this.isLateralDireita(i, j)  || this.isLateralEsquerda(i, j)) && this.pecaSuperior(i, j).isFixo() && this.pecaInferior(i, j).isFixo());
         }
         else if (peca.isL()) {
-            return this.verificaPecaFixaConsequenteLateralL(peca, i, j);
+            return ((this.isLateralSuperior(i, j) || this.isLateralInferior(i, j)) && (this.pecaDireita(i, j).isFixo()  || this.pecaEsquerda(i, j).isFixo()))
+                || ((this.isLateralDireita(i, j)  || this.isLateralEsquerda(i, j)) && (this.pecaSuperior(i, j).isFixo() || this.pecaInferior(i, j).isFixo()));
         }
         return true;
     }
     
-    private boolean verificaPecaFixaConsequenteLateralF(Peca peca, int i, int j) {
-        if (this.isLateralSuperior(i, j) || this.isLateralInferior(i, j)) {
-            return this.verificaPecaFixaConsequenteLateralFSuperiorInferior(peca, i, j);
+    private boolean fixaPecaConsequenteCanto(Peca peca, int i, int j) {
+        if (this.isCantoSuperiorEsquerdo(i, j)) {
+            return this.fixaPecaConsequenteCantoSuperiorEsquerdo(peca, i, j);
         }
-        else if (this.isLateralDireita(i, j) || this.isLateralEsquerda(i, j)) {
-            return this.verificaPecaFixaConsequenteLateralFDireitaEsquerda(peca, i, j);
+        else if (this.isCantoSuperiorDireito(i, j)) {
+            return this.fixaPecaConsequenteCantoSuperiorDireito(peca, i, j);
+        }
+        else if (this.isCantoInferiorEsquerdo(i, j)) {
+            return this.fixaPecaConsequenteCantoInferiorEsquerdo(peca, i, j);
+        }
+        else if (this.isCantoInferiorDireito(i, j)) {
+            return this.fixaPecaConsequenteCantoInferiorDireito(peca, i, j);
         }
         return true;
     }
-    
-    private boolean verificaPecaFixaConsequenteLateralFSuperiorInferior(Peca peca, int i, int j) {
+
+    private boolean fixaPecaConsequenteCantoSuperiorEsquerdo(Peca peca, int i, int j) {
+        Peca pecaInferior = this.pecaInferior(i, j);
+        Peca pecaDireita  = this.pecaDireita(i, j);
+        if ((pecaDireita.isFixo() && pecaDireita.isConectaEsquerda() || pecaInferior.isFixo() && !pecaInferior.isConectaCima()) && !peca.isPosicaoViradaDireita()) {
+            while (!peca.isPosicaoViradaDireita()) {
+                peca.gira();
+            }
+            return true;
+        }
+        else if ((pecaInferior.isFixo() && pecaInferior.isConectaCima() || pecaDireita.isFixo() && !pecaDireita.isConectaEsquerda()) && !peca.isPosicaoViradaBaixo()) {
+            while (!peca.isPosicaoViradaBaixo()) {
+                peca.gira();
+            }
+            return true;
+        }
+        return true;
+    }
+
+    private boolean fixaPecaConsequenteCantoSuperiorDireito(Peca peca, int i, int j) {
         Peca pecaEsquerda = this.pecaEsquerda(i, j);
-        if (pecaEsquerda.isFixo() && pecaEsquerda.isConectaDireita() && !peca.isPosicaoViradaEsquerda()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaEsquerda()) {
-                return false;
-            }
-        }
-        else {
-            Peca pecaDireita = this.pecaDireita(i, j);
-            if (pecaDireita.isFixo() && pecaDireita.isConectaEsquerda() && !peca.isPosicaoViradaEsquerda()) {
+        Peca pecaInferior = this.pecaInferior(i, j);
+        if ((pecaInferior.isFixo() && pecaInferior.isConectaCima() || pecaEsquerda.isFixo() && !pecaEsquerda.isConectaDireita()) && !peca.isPosicaoViradaBaixo()) {
+            while (!peca.isPosicaoViradaBaixo()) {
                 peca.gira();
-                if (!peca.isPosicaoViradaEsquerda()) {
-                    return false;
-                }
             }
+            return true;
+        }
+        else if ((pecaEsquerda.isFixo() && pecaEsquerda.isConectaDireita() || pecaInferior.isFixo() && !pecaInferior.isConectaCima()) && !peca.isPosicaoViradaEsquerda()) {
+            while (!peca.isPosicaoViradaEsquerda()) {
+                peca.gira();
+            }
+            return true;
+        }
+        return true;
+    }
+
+    private boolean fixaPecaConsequenteCantoInferiorEsquerdo(Peca peca, int i, int j) {
+        Peca pecaSuperior = this.pecaSuperior(i, j);
+        Peca pecaDireita  = this.pecaDireita(i, j);
+        if ((pecaDireita.isFixo() && pecaDireita.isConectaEsquerda() || pecaSuperior.isFixo() && !pecaSuperior.isConectaBaixo()) && !peca.isPosicaoViradaDireita()) {
+            while (!peca.isPosicaoViradaDireita()) {
+                peca.gira();
+            }
+            return true;
+        }
+        else if ((pecaSuperior.isFixo() && pecaSuperior.isConectaBaixo() || pecaDireita.isFixo() && !pecaDireita.isConectaEsquerda()) && !peca.isPosicaoViradaCima()) {
+            while (!peca.isPosicaoViradaCima()) {
+                peca.gira();
+            }
+            return true;
+        }
+        return true;
+    }
+
+    private boolean fixaPecaConsequenteCantoInferiorDireito(Peca peca, int i, int j) {
+        Peca pecaEsquerda = this.pecaEsquerda(i, j);
+        Peca pecaSuperior = this.pecaSuperior(i, j);
+        if ((pecaSuperior.isFixo() && pecaSuperior.isConectaBaixo() || pecaEsquerda.isFixo() && !pecaEsquerda.isConectaDireita()) && !peca.isPosicaoViradaCima()) {
+            while (!peca.isPosicaoViradaCima()) {
+                peca.gira();
+            }
+            return true;
+        }
+        else if ((pecaEsquerda.isFixo() && pecaEsquerda.isConectaDireita() || pecaSuperior.isFixo() && !pecaSuperior.isConectaBaixo()) && !peca.isPosicaoViradaEsquerda()) {
+            while (!peca.isPosicaoViradaEsquerda()) {
+                peca.gira();
+            }
+            return true;
         }
         return true;
     }
     
-    private boolean verificaPecaFixaConsequenteLateralFDireitaEsquerda(Peca peca, int i, int j) {
-        Peca pecaBaixo = this.pecaInferior(i, j);
-        if (pecaBaixo.isFixo() && pecaBaixo.isConectaCima() && !peca.isPosicaoViradaBaixo()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaBaixo()) {
-                return false;
-            }
+    private boolean fixaPecaConsequenteLateral(Peca peca, int i, int j) {
+        if (peca.isF()) {
+            return this.fixaPecaConsequenteLateralF(peca, i, j);
         }
-        else {
-            Peca pecaCima = this.pecaSuperior(i, j);
-            if (pecaCima.isFixo() && pecaCima.isConectaBaixo() && !peca.isPosicaoViradaCima()) {
-                peca.gira();
-                if (!peca.isPosicaoViradaCima()) {
-                    return false;
-                }
-            }
+        else if (peca.isL()) {
+            return this.fixaPecaConsequenteLateralL(peca, i, j);
         }
         return true;
     }
     
-    private boolean verificaPecaFixaConsequenteLateralL(Peca peca, int i, int j) {
+    private boolean fixaPecaConsequenteLateralF(Peca peca, int i, int j) {
         if (this.isLateralSuperior(i, j)) {
-            return this.verificaPecaFixaConsequenteLateralLSuperior(peca, i, j);
-        }
-        else if (this.isLateralDireita(i, j)) {
-            return this.verificaPecaFixaConsequenteLateralLDireita(peca, i, j);
+            return this.fixaPecaConsequenteLateralFSuperior(peca, i, j);
         }
         else if (this.isLateralInferior(i, j)) {
-            return this.verificaPecaFixaConsequenteLateralLInferior(peca, i, j);
+            return this.fixaPecaConsequenteLateralFInferior(peca, i, j);
+        }
+        else if (this.isLateralDireita(i, j)) {
+            return this.fixaPecaConsequenteLateralFDireita(peca, i, j);
         }
         else if (this.isLateralEsquerda(i, j)) {
-            return this.verificaPecaFixaConsequenteLateralLEsquerda(peca, i, j);
+            return this.fixaPecaConsequenteLateralFEsquerda(peca, i, j);            
         }
         return true;
     }
     
-    private boolean verificaPecaFixaConsequenteLateralLSuperior(Peca peca, int i, int j) {
+    private boolean fixaPecaConsequenteLateralFSuperior(Peca peca, int i, int j) {
         Peca pecaEsquerda = this.pecaEsquerda(i, j);
-        if (pecaEsquerda.isFixo() && pecaEsquerda.isConectaDireita() && !peca.isPosicaoViradaBaixo()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaBaixo()) {
-                return false;
+        Peca pecaDireita  = this.pecaDireita(i, j);
+        if (pecaEsquerda.isFixo() && pecaDireita.isFixo()) {
+            if (pecaEsquerda.isConectaDireita() && !peca.isPosicaoViradaEsquerda()) {
+                while (!peca.isPosicaoViradaEsquerda()) {
+                    peca.gira();
+                }
+                return true;
+            }
+            else if (pecaDireita.isConectaEsquerda() && !peca.isPosicaoViradaEsquerda()) {
+                while (!peca.isPosicaoViradaEsquerda()) {
+                    peca.gira();
+                }
+                return true;
+            }
+            else if (!peca.isPosicaoViradaBaixo()) {
+                while (!peca.isPosicaoViradaBaixo()) {
+                    peca.gira();
+                }
+                return true;
+            }
+        }
+        return true;
+    }
+    
+    private boolean fixaPecaConsequenteLateralFDireita(Peca peca, int i, int j) {
+        Peca pecaBaixo = this.pecaInferior(i, j);
+        Peca pecaCima  = this.pecaSuperior(i, j);
+        if (pecaBaixo.isFixo() && pecaCima.isFixo()) {
+            if (pecaBaixo.isConectaCima() && !peca.isPosicaoViradaBaixo()) {
+                while (!peca.isPosicaoViradaBaixo()) {
+                    peca.gira();
+                }
+                return true;
+            }
+            else if (pecaCima.isConectaBaixo() && !peca.isPosicaoViradaCima()) {
+                while (!peca.isPosicaoViradaCima()) {
+                    peca.gira();
+                }
+                return true;
+            }
+            else if (!peca.isPosicaoViradaEsquerda()) {
+                while (!peca.isPosicaoViradaEsquerda()) {
+                    peca.gira();
+                }
+                return true;
+            }
+        }
+        return true;
+    }
+    
+    private boolean fixaPecaConsequenteLateralFInferior(Peca peca, int i, int j) {
+        Peca pecaEsquerda = this.pecaEsquerda(i, j);
+        Peca pecaDireita  = this.pecaDireita(i, j);
+        if (pecaEsquerda.isFixo() && pecaDireita.isFixo()) {
+            if (pecaEsquerda.isConectaDireita() && !peca.isPosicaoViradaEsquerda()) {
+                while (!peca.isPosicaoViradaEsquerda()) {
+                    peca.gira();
+                }
+                return true;
+            }
+            else if (pecaDireita.isConectaEsquerda() && !peca.isPosicaoViradaEsquerda()) {
+                while (!peca.isPosicaoViradaEsquerda()) {
+                    peca.gira();
+                }
+                return true;
+            }
+            else if (!peca.isPosicaoViradaCima()) {
+                while (!peca.isPosicaoViradaCima()) {
+                    peca.gira();
+                }
+                return true;
+            }
+        }
+        return true;
+    }
+    
+    private boolean fixaPecaConsequenteLateralFEsquerda(Peca peca, int i, int j) {
+        Peca pecaBaixo = this.pecaInferior(i, j);
+        Peca pecaCima  = this.pecaSuperior(i, j);
+        if (pecaBaixo.isFixo() && pecaCima.isFixo()) {
+            if (pecaBaixo.isConectaCima() && !peca.isPosicaoViradaBaixo()) {
+                while (!peca.isPosicaoViradaBaixo()) {
+                    peca.gira();
+                }
+                return true;
+            }
+            else if (pecaCima.isConectaBaixo() && !peca.isPosicaoViradaCima()) {
+                while (!peca.isPosicaoViradaCima()) {
+                    peca.gira();
+                }
+                return true;
+            }
+            else if (!peca.isPosicaoViradaDireita()) {
+                while (!peca.isPosicaoViradaDireita()) {
+                    peca.gira();
+                }
+                return true;
+            }
+        }
+        return true;
+    }
+    
+    private boolean fixaPecaConsequenteLateralL(Peca peca, int i, int j) {
+        if (this.isLateralSuperior(i, j)) {
+            return this.fixaPecaConsequenteLateralLSuperior(peca, i, j);
+        }
+        else if (this.isLateralDireita(i, j)) {
+            return this.fixaPecaConsequenteLateralLDireita(peca, i, j);
+        }
+        else if (this.isLateralInferior(i, j)) {
+            return this.fixaPecaConsequenteLateralLInferior(peca, i, j);
+        }
+        else if (this.isLateralEsquerda(i, j)) {
+            return this.fixaPecaConsequenteLateralLEsquerda(peca, i, j);
+        }
+        return true;
+    }
+    
+    private boolean fixaPecaConsequenteLateralLSuperior(Peca peca, int i, int j) {
+        Peca pecaEsquerda = this.pecaEsquerda(i, j);
+        if (pecaEsquerda.isFixo()) {
+            if (pecaEsquerda.isConectaDireita()) {
+                if (!peca.isPosicaoViradaBaixo()) {
+                    while (!peca.isPosicaoViradaBaixo()) {
+                        peca.gira();
+                    }
+                    return true;
+                }
+            }
+            else {
+                if (!peca.isPosicaoViradaDireita()) {
+                    while (!peca.isPosicaoViradaDireita()) {
+                        peca.gira();
+                    }
+                    return true;
+                }
             }
         }
         else {
             Peca pecaDireita = this.pecaDireita(i, j);
-            if (pecaDireita.isFixo() && pecaDireita.isConectaEsquerda() && !peca.isPosicaoViradaDireita()) {
-                peca.gira();
-                if (!peca.isPosicaoViradaDireita()) {
-                    return false;
+            if (pecaDireita.isFixo()) {
+                if (pecaDireita.isConectaEsquerda()) {
+                    if (!peca.isPosicaoViradaDireita()) {
+                        while (!peca.isPosicaoViradaDireita()) {
+                            peca.gira();
+                        }
+                        return true;
+                    }
+                }
+                else if (!peca.isPosicaoViradaBaixo()) {
+                    while (!peca.isPosicaoViradaBaixo()) {
+                        peca.gira();
+                    }
+                    return true;
                 }
             }
         }
         return true;
     }
     
-    private boolean verificaPecaFixaConsequenteLateralLDireita(Peca peca, int i, int j) {
+    private boolean fixaPecaConsequenteLateralLDireita(Peca peca, int i, int j) {
         Peca pecaBaixo = this.pecaInferior(i, j);
-        if (pecaBaixo.isFixo() && pecaBaixo.isConectaCima() && !peca.isPosicaoViradaBaixo()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaBaixo()) {
-                return false;
+        if (pecaBaixo.isFixo()) {
+            if (pecaBaixo.isConectaCima()) {
+                if (!peca.isPosicaoViradaBaixo()) {
+                    while (!peca.isPosicaoViradaBaixo()) {
+                        peca.gira();
+                    }
+                    return true;
+                }
+            }
+            else {
+                if (!peca.isPosicaoViradaEsquerda()) {
+                    while (!peca.isPosicaoViradaEsquerda()) {
+                        peca.gira();
+                    }
+                    return true;
+                }
             }
         }
         else {
             Peca pecaCima = this.pecaSuperior(i, j);
-            if (pecaCima.isFixo() && pecaCima.isConectaBaixo() && !peca.isPosicaoViradaEsquerda()) {
-                peca.gira();
-                if (!peca.isPosicaoViradaEsquerda()) {
-                    return false;
+            if (pecaCima.isFixo()) {
+                if (pecaCima.isConectaBaixo()) {
+                    if (!peca.isPosicaoViradaEsquerda()) {
+                        while (!peca.isPosicaoViradaEsquerda()) {
+                            peca.gira();
+                        }
+                        return true;
+                    }
+                }
+                else if (!peca.isPosicaoViradaBaixo()) {
+                    while (!peca.isPosicaoViradaBaixo()) {
+                        peca.gira();
+                    }
+                    return true;
                 }
             }
         }
         return true;
     }
     
-    private boolean verificaPecaFixaConsequenteLateralLInferior(Peca peca, int i, int j) {
+    private boolean fixaPecaConsequenteLateralLInferior(Peca peca, int i, int j) {
         Peca pecaDireita = this.pecaDireita(i, j);
-        Peca pecaEsquerda = this.pecaEsquerda(i, j);
-        if ((pecaDireita.isFixo() && pecaDireita.isConectaEsquerda()) && !peca.isPosicaoViradaCima()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaCima()) {
-                return false;
+        if (pecaDireita.isFixo()) {
+            if (pecaDireita.isConectaEsquerda()) {
+                if (!peca.isPosicaoViradaCima()) {
+                    while (!peca.isPosicaoViradaCima()) {
+                        peca.gira();
+                    }
+                    return true;
+                }
+            }
+            else {
+                if (!peca.isPosicaoViradaEsquerda()) {
+                    while (!peca.isPosicaoViradaEsquerda()) {
+                        peca.gira();
+                    }
+                    return true;
+                }
             }
         }
-        else if (pecaEsquerda.isFixo() && pecaEsquerda.isConectaDireita() && !peca.isPosicaoViradaEsquerda()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaEsquerda()) {
-                return false;
+        else {
+            Peca pecaEsquerda = this.pecaEsquerda(i, j);
+            if (pecaEsquerda.isFixo()) {
+                if (pecaEsquerda.isConectaDireita()) {
+                    if (!peca.isPosicaoViradaEsquerda()) {
+                        while (!peca.isPosicaoViradaEsquerda()) {
+                            peca.gira();
+                        }
+                        return true;
+                    }
+                }
+                else if (!peca.isPosicaoViradaCima()) {
+                    while (!peca.isPosicaoViradaCima()) {
+                        peca.gira();
+                    }
+                    return true;
+                }
             }
         }
         return true;
     }
     
-    private boolean verificaPecaFixaConsequenteLateralLEsquerda(Peca peca, int i, int j) {
+    private boolean fixaPecaConsequenteLateralLEsquerda(Peca peca, int i, int j) {
         Peca pecaCima = this.pecaSuperior(i, j);
-        if (pecaCima.isFixo() && pecaCima.isConectaBaixo() && !peca.isPosicaoViradaCima()) {
-            peca.gira();
-            if (!peca.isPosicaoViradaCima()) {
-                return false;
+        if (pecaCima.isFixo()) {
+            if (pecaCima.isConectaBaixo()) {
+                if (!peca.isPosicaoViradaCima()) {
+                    while (!peca.isPosicaoViradaCima()) {
+                        peca.gira();
+                    }
+                    return true;
+                }
+            }
+            else {
+                if (!peca.isPosicaoViradaDireita()) {
+                    while (!peca.isPosicaoViradaDireita()) {
+                        peca.gira();
+                    }
+                    return true;
+                }
             }
         }
         else {
             Peca pecaBaixo = this.pecaInferior(i, j);
-            if (pecaBaixo.isFixo() && pecaBaixo.isConectaCima()&& !peca.isPosicaoViradaDireita()) {
-                peca.gira();
-                if (!peca.isPosicaoViradaDireita()) {
-                    return false;
+            if (pecaBaixo.isFixo()) {
+                if (pecaBaixo.isConectaCima()) {
+                    if (!peca.isPosicaoViradaDireita()) {
+                        while (!peca.isPosicaoViradaDireita()) {
+                            peca.gira();
+                        }
+                        return true;
+                    }
+                }
+                else if (!peca.isPosicaoViradaCima()) {
+                    while (!peca.isPosicaoViradaCima()) {
+                        peca.gira();
+                    }
+                    return true;
                 }
             }
         }
         return true;
     }
+    
     private boolean isCanto(int i, int j) {
         return this.isCantoSuperiorEsquerdo(i, j) || this.isCantoSuperiorDireito(i, j) || this.isCantoInferiorEsquerdo(i, j) || this.isCantoInferiorDireito(i, j);
     }
@@ -394,34 +621,34 @@ public class PipePuzzle implements Estado {
     private boolean fixaPecaCanto(Peca peca, int i, int j) {
         if (this.isCantoSuperiorEsquerdo(i, j)) {
             if (!peca.isPosicaoViradaDireita()) {
-                peca.gira();
-                if (!peca.isPosicaoViradaDireita()) {
-                    return false;
+                while (!peca.isPosicaoViradaDireita()) {
+                    peca.gira();
                 }
+                return true;
             }
         }
         else if (this.isCantoSuperiorDireito(i, j)) {
             if (!peca.isPosicaoViradaBaixo()) {
-                peca.gira();
-                if (!peca.isPosicaoViradaBaixo()) {
-                    return false;
+                while (!peca.isPosicaoViradaBaixo()) {
+                    peca.gira();
                 }
+                return true;
             }
         }
         else if (this.isCantoInferiorDireito(i, j)) {
             if (!peca.isPosicaoViradaEsquerda()) {
-                peca.gira();
-                if (!peca.isPosicaoViradaEsquerda()) {
-                    return false;
+                while (!peca.isPosicaoViradaEsquerda()) {
+                    peca.gira();
                 }
+                return true;
             }
         }
         else if (this.isCantoInferiorEsquerdo(i, j)) {
             if (!peca.isPosicaoViradaCima()) {
-                peca.gira();
-                if (!peca.isPosicaoViradaCima()) {
-                    return false;
+                while (!peca.isPosicaoViradaCima()) {
+                    peca.gira();
                 }
+                return true;
             }
         }
         return true;
@@ -431,52 +658,52 @@ public class PipePuzzle implements Estado {
         if (peca.isR()) {
             if (this.isLateralSuperior(i, j) || this.isLateralInferior(i, j)) {
                 if (!(peca.isPosicaoViradaDireita() || peca.isPosicaoViradaEsquerda())) {
-                    peca.gira();
-                    if (!(peca.isPosicaoViradaDireita() || peca.isPosicaoViradaEsquerda())) {
-                        return false;
+                    while (!(peca.isPosicaoViradaDireita() || peca.isPosicaoViradaEsquerda())) {
+                        peca.gira();
                     }
+                    return true;
                 }
             }
             if (this.isLateralDireita(i, j) || this.isLateralEsquerda(i, j)) {
                 if (!(peca.isPosicaoViradaCima()|| peca.isPosicaoViradaBaixo())) {
-                    peca.gira();
-                    if (!(peca.isPosicaoViradaCima()|| peca.isPosicaoViradaBaixo())) {
-                        return false;
+                    while (!(peca.isPosicaoViradaCima()|| peca.isPosicaoViradaBaixo())) {
+                        peca.gira();
                     }
+                    return true;
                 }
             }
         }
         else if (peca.isT()) {
             if (this.isLateralSuperior(i, j)) {
                 if (!peca.isPosicaoViradaBaixo()) {
-                    peca.gira();
-                    if (!peca.isPosicaoViradaBaixo()) {
-                        return false;
+                    while (!peca.isPosicaoViradaBaixo()) {
+                        peca.gira();
                     }
+                    return true;
                 }
             }
             else if (this.isLateralDireita(i, j)) {
                 if (!peca.isPosicaoViradaEsquerda()) {
-                    peca.gira();
-                    if (!peca.isPosicaoViradaEsquerda()) {
-                        return false;
+                    while (!peca.isPosicaoViradaEsquerda()) {
+                        peca.gira();
                     }
+                    return true;
                 }
             }
             else if (this.isLateralInferior(i, j)) {
                 if (!peca.isPosicaoViradaCima()) {
-                    peca.gira();
-                    if (!peca.isPosicaoViradaCima()) {
-                        return false;
+                    while (!peca.isPosicaoViradaCima()) {
+                        peca.gira();
                     }
+                    return true;
                 }
             }
             else if (this.isLateralEsquerda(i, j)) {
-                if (!peca.isPosicaoViradaCima()) {
-                    peca.gira();
-                    if (!peca.isPosicaoViradaCima()) {
-                        return false;
+                if (!peca.isPosicaoViradaDireita()) {
+                    while (!peca.isPosicaoViradaDireita()) {
+                        peca.gira();
                     }
+                    return true;
                 }
             }
         }
@@ -501,18 +728,11 @@ public class PipePuzzle implements Estado {
     
     @Override
     public String toString() {
-        String[][] retorno = new String[3][3];
-        
-        for (int i = 0; i < pecas.length; i++) {
-            for (int j = 0; j < pecas[i].length; j++) {
-                retorno[i][j] = pecas[i][j].toString();
-            }
-        }
         
         return "PipePuzzle {\n"
-             + "    " + retorno[0][0] + ", " + retorno[0][1] + ", " + retorno[0][2] + "\n"
-             + "    " + retorno[1][0] + ", " + retorno[1][1] + ", " + retorno[1][2] + "\n"
-             + "    " + retorno[2][0] + ", " + retorno[2][1] + ", " + retorno[2][2] + "\n"
+             + "    " + pecas[0][0].getNomeCompletoPeca() + ", " + pecas[0][1].getNomeCompletoPeca() + ", " + pecas[0][2].getNomeCompletoPeca() + "\n"
+             + "    " + pecas[1][0].getNomeCompletoPeca() + ", " + pecas[1][1].getNomeCompletoPeca() + ", " + pecas[1][2].getNomeCompletoPeca() + "\n"
+             + "    " + pecas[2][0].getNomeCompletoPeca() + ", " + pecas[2][1].getNomeCompletoPeca() + ", " + pecas[2][2].getNomeCompletoPeca() + "\n"
              + "}";
     }
     
