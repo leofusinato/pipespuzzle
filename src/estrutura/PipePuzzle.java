@@ -96,7 +96,7 @@ public class PipePuzzle implements Estado {
         }
         
         PipePuzzle novoEstado = new PipePuzzle(this.getPecas(), this.isAllPecasFixasFixadas(), this.isAllPecasFixasFixadasConsequentes(), this.isPecaMeioFixada());
-        
+
         retorno.add(novoEstado);
         
         return retorno;
@@ -148,9 +148,9 @@ public class PipePuzzle implements Estado {
         Peca pecaDireita  = this.pecaDireita(1, 1);
         
         while (!(pecaMeio.isConectaCima()     == pecaSuperior.isConectaBaixo()
-           && pecaMeio.isConectaBaixo()    == pecaInferior.isConectaCima()
-           && pecaMeio.isConectaEsquerda() == pecaEsquerda.isConectaDireita()
-           && pecaMeio.isConectaDireita()  == pecaDireita.isConectaEsquerda())) {
+              && pecaMeio.isConectaBaixo()    == pecaInferior.isConectaCima()
+              && pecaMeio.isConectaEsquerda() == pecaEsquerda.isConectaDireita()
+              && pecaMeio.isConectaDireita()  == pecaDireita.isConectaEsquerda())) {
             pecaMeio.gira();
         }
         
