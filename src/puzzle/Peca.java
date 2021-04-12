@@ -188,12 +188,24 @@ public class Peca implements Conectavel, Cloneable {
     }
     
     /**
-     * Retorna a instancia do icone da imagem, de acordo com o nome
+     * Retorna a instancia do icone da imagem se água, de acordo com o nome
      * 
      * @return ImageIcon
      */
     public ImageIcon getInstanceImage() {
-        return new ImageIcon(getClass().getResource("/images/" + this.getNomeCompletoPeca() + ".png"));
+        return this.getInstanceImage(false);
+    }
+    
+    /**
+     * Retorna a instancia do icone da imagem, de acordo com o nome
+     * @param withAgua Define se deve retornar a iamgem com água ou sem
+     * @return ImageIcon
+     */
+    public ImageIcon getInstanceImage(boolean withAgua) {
+        String path = "/images/".concat(withAgua ? "full/" : "empty/");
+        String nome = this.getNomeCompletoPeca();
+        String ext  = ".png";
+        return new ImageIcon(getClass().getResource(path.concat(nome).concat(ext)));
     }
 
     @Override

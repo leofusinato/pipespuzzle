@@ -34,7 +34,7 @@ public class Resultado extends javax.swing.JFrame {
         for (int i = 0; i < pecas.length; i++) {
             for (int j = 0; j < pecas[i].length; j++) {
                 try {
-                    icones[i][j].setIcon(pecas[i][j].getInstanceImage());
+                    icones[i][j].setIcon(pecas[i][j].getInstanceImage(true));
                 } catch(Exception e) {
                     JOptionPane.showMessageDialog(null, "Nao foi possivel montar o resultado final");
                     clearImgs();
