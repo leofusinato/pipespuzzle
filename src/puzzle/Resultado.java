@@ -94,6 +94,7 @@ public class Resultado extends javax.swing.JFrame {
 
         icon1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        resultado.setEditable(false);
         resultado.setColumns(20);
         resultado.setLineWrap(true);
         resultado.setRows(5);
