@@ -4,9 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import puzzle.Peca;
 
-/**
- * @author Leonardo Alex Fusinato
- */
 public class PipePuzzle implements Estado {
     
     private Peca    pecas[][];
