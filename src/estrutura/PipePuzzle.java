@@ -137,12 +137,16 @@ public class PipePuzzle implements Estado {
                         if (this.fixaPecaConsequenteCanto(peca, i, j)) {
                             return false;
                         }
+                        i = 0;
+                        j = 0;
                     }
                     if (this.isLateral(i, j) && (peca.isF() || peca.isL()) && this.verificaPecaFixavelConsequenteLateral(peca, i, j)) {
                         peca.setFixo(true);
                         if (this.fixaPecaConsequenteLateral(peca, i, j)) {
                             return false;
                         }
+                        i = 0;
+                        j = 0;
                     }
                 }
             }
@@ -320,8 +324,8 @@ public class PipePuzzle implements Estado {
                 while (!peca.isPosicaoViradaBaixo()) {
                     peca.gira();
                 }
+                return true;
             }
-            return true;
         }
         return false;
     }
@@ -346,8 +350,8 @@ public class PipePuzzle implements Estado {
                 while (!peca.isPosicaoViradaEsquerda()) {
                     peca.gira();
                 }
+                return true;
             }
-            return true;
         }
         return false;
     }
@@ -372,8 +376,8 @@ public class PipePuzzle implements Estado {
                 while (!peca.isPosicaoViradaCima()) {
                     peca.gira();
                 }
+                return true;
             }
-            return true;
         }
         return false;
     }
@@ -398,8 +402,8 @@ public class PipePuzzle implements Estado {
                 while (!peca.isPosicaoViradaDireita()) {
                     peca.gira();
                 }
+                return true;
             }
-            return true;
         }
         return false;
     }
@@ -429,7 +433,7 @@ public class PipePuzzle implements Estado {
                 }
                 return true;
             }
-            else if (!peca.isPosicaoViradaDireita()) {
+            else if (!pecaEsquerda.isConectaDireita() && !peca.isPosicaoViradaDireita()) {
                 while (!peca.isPosicaoViradaDireita()) {
                     peca.gira();
                 }
@@ -445,12 +449,12 @@ public class PipePuzzle implements Estado {
                     }
                     return true;
                 }
-                else if (!peca.isPosicaoViradaBaixo()) {
+                else if (!pecaDireita.isConectaEsquerda() && !peca.isPosicaoViradaBaixo()) {
                     while (!peca.isPosicaoViradaBaixo()) {
                         peca.gira();
                     }
+                    return true;
                 }
-                return true;
             }
         }
         return false;
@@ -465,7 +469,7 @@ public class PipePuzzle implements Estado {
                     }
                     return true;
             }
-            else if (!peca.isPosicaoViradaEsquerda()) {
+            else if (!pecaBaixo.isConectaCima() && !peca.isPosicaoViradaEsquerda()) {
                 while (!peca.isPosicaoViradaEsquerda()) {
                     peca.gira();
                 }
@@ -481,12 +485,12 @@ public class PipePuzzle implements Estado {
                     }
                     return true;
                 }
-                else if (!peca.isPosicaoViradaBaixo()) {
+                else if (!pecaCima.isConectaBaixo() && !peca.isPosicaoViradaBaixo()) {
                     while (!peca.isPosicaoViradaBaixo()) {
                         peca.gira();
                     }
+                    return true;
                 }
-                return true;
             }
         }
         return false;
@@ -501,7 +505,7 @@ public class PipePuzzle implements Estado {
                 }
                 return true;
             }
-            else if (!peca.isPosicaoViradaEsquerda()) {
+            else if (!pecaDireita.isConectaEsquerda() && !peca.isPosicaoViradaEsquerda()) {
                 while (!peca.isPosicaoViradaEsquerda()) {
                     peca.gira();
                 }
@@ -517,12 +521,12 @@ public class PipePuzzle implements Estado {
                     }
                     return true;
                 }
-                else if (!peca.isPosicaoViradaCima()) {
+                else if (!pecaEsquerda.isConectaDireita() && !peca.isPosicaoViradaCima()) {
                     while (!peca.isPosicaoViradaCima()) {
                         peca.gira();
                     }
+                    return true;
                 }
-                return true;
             }
         }
         return false;
@@ -531,21 +535,17 @@ public class PipePuzzle implements Estado {
     private boolean fixaPecaConsequenteLateralLEsquerda(Peca peca, int i, int j) {
         Peca pecaCima = this.pecaSuperior(i, j);
         if (pecaCima.isFixo()) {
-            if (pecaCima.isConectaBaixo()) {
-                if (!peca.isPosicaoViradaCima() && !peca.isPosicaoViradaCima()) {
-                    while (!peca.isPosicaoViradaCima()) {
-                        peca.gira();
-                    }
-                    return true;
+            if (pecaCima.isConectaBaixo() && !peca.isPosicaoViradaCima()) {
+                while (!peca.isPosicaoViradaCima()) {
+                    peca.gira();
                 }
+                return true;
             }
-            else {
-                if (!peca.isPosicaoViradaDireita() && !peca.isPosicaoViradaDireita()) {
-                    while (!peca.isPosicaoViradaDireita()) {
-                        peca.gira();
-                    }
-                    return true;
+            else if (!pecaCima.isConectaBaixo() && !peca.isPosicaoViradaDireita()) {
+                while (!peca.isPosicaoViradaDireita()) {
+                    peca.gira();
                 }
+                return true;
             }
         }
         else {
@@ -557,12 +557,12 @@ public class PipePuzzle implements Estado {
                     }
                     return true;
                 }
-                else if (!peca.isPosicaoViradaCima()) {
+                else if (!pecaBaixo.isConectaCima() && !peca.isPosicaoViradaCima()) {
                     while (!peca.isPosicaoViradaCima()) {
                         peca.gira();
                     }
+                    return true;
                 }
-                return true;
             }
         }
         return false;
