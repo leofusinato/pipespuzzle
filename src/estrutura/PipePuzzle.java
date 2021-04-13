@@ -320,7 +320,7 @@ public class PipePuzzle implements Estado {
                 }
                 return true;
             }
-            else if (!pecaEsquerda.isConectaDireita() && !pecaDireita.isConectaEsquerda()&& !peca.isPosicaoViradaBaixo()) {
+            else if (!pecaEsquerda.isConectaDireita() && !pecaDireita.isConectaEsquerda() && !peca.isPosicaoViradaBaixo()) {
                 while (!peca.isPosicaoViradaBaixo()) {
                     peca.gira();
                 }
@@ -346,7 +346,7 @@ public class PipePuzzle implements Estado {
                 }
                 return true;
             }
-            else if (!pecaBaixo.isConectaCima() && !pecaCima.isConectaBaixo()&& !peca.isPosicaoViradaEsquerda()) {
+            else if (!pecaBaixo.isConectaCima() && !pecaCima.isConectaBaixo() && !peca.isPosicaoViradaEsquerda()) {
                 while (!peca.isPosicaoViradaEsquerda()) {
                     peca.gira();
                 }
@@ -372,7 +372,7 @@ public class PipePuzzle implements Estado {
                 }
                 return true;
             }
-            else if (!pecaEsquerda.isConectaDireita() && !pecaDireita.isConectaEsquerda()&& !peca.isPosicaoViradaCima()) {
+            else if (!pecaEsquerda.isConectaDireita() && !pecaDireita.isConectaEsquerda() && !peca.isPosicaoViradaCima()) {
                 while (!peca.isPosicaoViradaCima()) {
                     peca.gira();
                 }
@@ -398,7 +398,7 @@ public class PipePuzzle implements Estado {
                 }
                 return true;
             }
-            else if (!pecaBaixo.isConectaCima() && !pecaCima.isConectaBaixo()&& !peca.isPosicaoViradaDireita()) {
+            else if (!pecaBaixo.isConectaCima() && !pecaCima.isConectaBaixo() && !peca.isPosicaoViradaDireita()) {
                 while (!peca.isPosicaoViradaDireita()) {
                     peca.gira();
                 }
